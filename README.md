@@ -1,9 +1,8 @@
 ##Ruby for Light Table
 
-This plugin is a very alpha demonstration of what a ruby instarepl will soon look like in Light Table.  It can evaluate the contents of a ruby file and print the result of the last statement up at the top line.  No extra editing of the file is needed, and the result comes accross in the nice Light Table Chrome.  Like a true repl eval happens in its own binding so your state will persist across evals.
+This plugin is a very alpha demonstration of what a ruby instarepl will soon look like in Light Table.  It can evaluate the contents of a ruby file and print the result of the last statement up at the top line.  No extra editing of the file is needed, and the result comes back in the nice Light Table widgets.  Like a true repl eval happens in its own binding so your state will persist across evals.
 
 ## Installation
-
 
 1.  From LightTable's plugin manager, double-click the "Ruby Instarepl" plugin
 2.  If your preferred ruby is not your system default, go to User Behaviors and add an entry for `(:lt.objs.langs.ruby/ruby-exe /path/to/ruby)`
