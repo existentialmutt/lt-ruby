@@ -18,9 +18,11 @@ You'll need the `eventmachine` and `json` gems installed.  RVM users should set 
 Developed on Mac OS X 10.7 with ruby 2.0
 
 ## The Road Forward
-There are plenty of rough edges still.  Exceptions in ruby aren't being properly communicated back to the editor, for example, and there is some pollution between the repl client and the evaluation environment.  When eval'ing multiple statements, it could be nice to see inline results for each statement.
+There are plenty of rough edges still to clean up.  The biggest one to watch out for is that trying to eval before manually adding a connection will spawn a connection that doesn't work.
 
 Once I get things working better for vanilla ruby, I plan to add better support for RVM and Rails.
+
+It could also be nice to incorporate other features from the stock LT plugins, such as results for individual statements within a block of eval'd code and watches.
 
 ## Acknowledgements
 

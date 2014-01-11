@@ -68,7 +68,8 @@ class LtClient < EM::Connection
     result = $main_binding.eval(args["code"])
     send_response(id, "editor.eval.ruby.result", {"result" => result, "meta" => args["meta"]})
   rescue Exception => e
-    send_response(id, "editor.eval.ruby.exception", {"ex" => e.backtrace.join("\n")})
+    exception_and_backtrace = [e.inspect, e.backtrace].flatten.join("\n")
+    send_response(id, "editor.eval.ruby.exception", {"ex" => exception_and_backtrace, "meta" => args["meta"]})
   end
 
 end
