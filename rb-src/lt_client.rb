@@ -1,21 +1,17 @@
 $main_binding = binding
 
 require "logger"
-logger = Logger.new("lt_client.log")
-
-# put REPL inside of EM
-# statefulness (binding)
-# error handling (with binding)
-# wrap in JSON for lt
-
 require 'eventmachine'
 require 'json'
 require 'fileutils'
 
+LOGFILE = "lt_client.log"
+logger = Logger.new(LOGFILE)
+
 class LtClient < EM::Connection
 
   def logger
-    @_logger = Logger.new("lt_client.log")
+    @_logger = Logger.new(LOGFILE)
   end
 
   def post_init
@@ -53,6 +49,7 @@ class LtClient < EM::Connection
       when "client.close"
         logger.debug("Disconnecting")
         close_connection
+        exit(0)
       end
     else
       puts "Ignoring invalid input"
