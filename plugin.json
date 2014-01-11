@@ -1,0 +1,10 @@
+{
+  "name": "Ruby Instarepl",
+  "author": "Rafe Rosen",
+  "version": "0.0.1",
+  "source": "https://github.com/existentialmutt/lt-ruby",
+  "desc": "Ruby language plugin for Light Table",
+  "dependencies": {
+  },
+  "behaviors": "ruby.behaviors"
+}
