@@ -1,4 +1,4 @@
 .tags
 TAGS
 target/
-lt_client.log
+*lt_client.log

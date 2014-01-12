@@ -1,9 +1,0 @@
-# Logfile created on 2014-01-11 02:13:41 -0500 by logger.rb/36483
-D, [2014-01-11T02:14:08.108207 #5376] DEBUG -- : Connection Initizlized
-D, [2014-01-11T02:14:08.108363 #5376] DEBUG -- : Connection Established
-D, [2014-01-11T02:14:08.108526 #5376] DEBUG -- : Sent Client info
-D, [2014-01-11T02:14:08.108579 #5376] DEBUG -- : {"name":"rb-src","client-id":"70","dir":"/Users/rrosen/Library/Application Support/LightTable/plugins/lt-ruby/rb-src","commands":["editor.eval.ruby"],"type":"ruby"}
-D, [2014-01-11T02:14:13.810389 #5376] DEBUG -- : Received Data:
-D, [2014-01-11T02:14:13.810532 #5376] DEBUG -- : [23,"client.close",null]
-
-D, [2014-01-11T02:14:13.810700 #5376] DEBUG -- : Disconnecting
