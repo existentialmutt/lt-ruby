@@ -25,12 +25,10 @@ class LtClient < EM::Connection
   end
 
   def connection_completed
-    $stdout = LtPrinter.new(self)
-    $stderr = LtPrinter.new(self)
     logger.debug "Connection Established"
     client_info = JSON.generate({
       "name" => File.basename(FileUtils.pwd),
-      "client-id" => ARGV[1],
+      "client-id" => ARGV[1].to_i,
       "dir" => FileUtils.pwd,
       "commands" => ["editor.eval.ruby"],
       "type" => "ruby"
@@ -38,6 +36,8 @@ class LtClient < EM::Connection
     send_data(client_info+"\n")
     logger.debug("Sent Client info")
     logger.debug(client_info)
+    $stdout = LtPrinter.new(self)
+    $stderr = LtPrinter.new(self)
   end
 
   def receive_data(data)
