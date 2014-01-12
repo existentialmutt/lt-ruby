@@ -21,13 +21,12 @@ class LtClient < EM::Connection
   end
 
   def post_init
-    logger.debug "Connection Initiallized"
-    $stdout = LtPrinter.new(self)
-    $stderr = LtPrinter.new(self)
-    safe_print "Connected\n"
+    logger.debug("Client Initialized")
   end
 
   def connection_completed
+    $stdout = LtPrinter.new(self)
+    $stderr = LtPrinter.new(self)
     logger.debug "Connection Established"
     client_info = JSON.generate({
       "name" => File.basename(FileUtils.pwd),
@@ -65,7 +64,7 @@ class LtClient < EM::Connection
         exit(0)
       end
     else
-      puts "Ignoring invalid input"
+      logger.debug "Ignoring invalid input"
     end
   end
 
@@ -89,10 +88,6 @@ class LtClient < EM::Connection
     send_response(id, "editor.eval.ruby.exception", {"ex" => exception_and_backtrace, "meta" => args["meta"]})
   end
 
-  def safe_print(text)
-    $stdout.write(text)
-    $stdout.flush
-  end
 
 end
 
@@ -113,10 +108,17 @@ class LtPrinter
 
   def flush
     client.send_response(client.currentId, "editor.eval.ruby.print", {"msg" => @cur, "file" => File.basename(FileUtils.pwd)})
+    @cur = ""
+  end
+
+  def self.safe_print(text)
+    $stdout.write(text)
+    $stdout.flush
   end
 end
 
 EM.run do
   EM.connect '127.0.0.1', ARGV[0].to_i, LtClient
+  LtPrinter.safe_print "Connected\n"
 end
 
