@@ -9,7 +9,7 @@ No extra editing of the file is needed, and the result comes back in the nice Li
 1.  From LightTable's plugin manager, choose the available tab and double-click the "Ruby Instarepl" plugin to install it
 2.  If your preferred ruby is not your system default, go to User Behaviors and add an entry for `(:lt.objs.langs.ruby/ruby-exe /path/to/ruby)`
 3.  Open the Command Bar and choose `App: Reload Behaviors` or restart LightTable
-4.  open up a ruby file, add a "Ruby" connection, select some code and use `ctrl/cmd-enter` to eval it.  Use `ctrl/cmd-shift-enter` to eval the whole file (the result will be added off the first line).
+4.  Open up a ruby file, add a "Ruby" connection, select some code and use `ctrl/cmd-enter` to eval it.  Use `ctrl/cmd-shift-enter` to eval the whole file (the result will be added off the first line).
 
 ## Requirements
 
