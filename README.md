@@ -1,6 +1,6 @@
 ##Ruby for Light Table
 
-This plugin is an alpha implementation of a ruby in Light Table.  It can evaluate the contents of a ruby file and print the result of the last statement up at the top line.  It can also eval selections of ruby code and print the result next to it.
+This plugin is an alpha implementation of a ruby instarepl for Light Table.  It can evaluate the contents of a ruby file and print the result of the last statement up at the top line.  It can also eval selections of ruby code and print the result next to it.
 
 No extra editing of the file is needed, and the result comes back in the nice Light Table widgets.  Like a true repl eval happens in its own binding so your state will persist across evals.
 
