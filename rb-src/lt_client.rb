@@ -8,6 +8,10 @@ require 'fileutils'
 LOGFILE = "lt_client.log"
 logger = Logger.new(LOGFILE)
 
+logger.debug "Server Started with command:"
+logger.debug($0)
+logger.debug(ARGV)
+
 class LtClient < EM::Connection
 
   def logger
@@ -15,7 +19,7 @@ class LtClient < EM::Connection
   end
 
   def post_init
-    logger.debug "Connection Initizlized"
+    logger.debug "Connection Initiallized"
   end
 
   def connection_completed
@@ -66,7 +70,11 @@ class LtClient < EM::Connection
 
   def eval_ruby(id, args)
     result = $main_binding.eval(args["code"])
-    send_response(id, "editor.eval.ruby.result", {"result" => result, "meta" => args["meta"]})
+    if result.nil?
+      send_response(id, "editor.eval.ruby.success", {"meta" => args["meta"]})
+    else
+      send_response(id, "editor.eval.ruby.result", {"result" => result, "meta" => args["meta"]})
+    end
   rescue Exception => e
     exception_and_backtrace = [e.inspect, e.backtrace].flatten.join("\n")
     send_response(id, "editor.eval.ruby.exception", {"ex" => exception_and_backtrace, "meta" => args["meta"]})
