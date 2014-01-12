@@ -18,7 +18,7 @@ You'll need the `eventmachine` and `json` gems installed.  RVM users should set 
 Developed on Mac OS X 10.7 with ruby 2.0
 
 ## The Road Forward
-There are plenty of rough edges still to clean up.  The biggest one to watch out for is that trying to eval before manually adding a connection will spawn a connection that doesn't work.
+There are plenty of rough edges still to clean up.
 
 Once I get things working better for vanilla ruby, I plan to add better support for RVM and Rails.
 
