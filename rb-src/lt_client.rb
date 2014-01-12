@@ -14,12 +14,17 @@ logger.debug(ARGV)
 
 class LtClient < EM::Connection
 
+  attr_accessor :currentId
+
   def logger
     @_logger = Logger.new(LOGFILE)
   end
 
   def post_init
     logger.debug "Connection Initiallized"
+    $stdout = LtPrinter.new(self)
+    $stderr = LtPrinter.new(self)
+    safe_print "Connected\n"
   end
 
   def connection_completed
@@ -43,6 +48,10 @@ class LtClient < EM::Connection
       id, cmd, args = JSON.parse(data)
     rescue JSON::ParserError => e
       puts "JSON Parser Error"
+    end
+
+    if id
+      self.currentId = id
     end
 
     # Dispatch on cmd
@@ -80,8 +89,32 @@ class LtClient < EM::Connection
     send_response(id, "editor.eval.ruby.exception", {"ex" => exception_and_backtrace, "meta" => args["meta"]})
   end
 
+  def safe_print(text)
+    $stdout.write(text)
+    $stdout.flush
+  end
+
 end
 
+class LtPrinter
+  attr_accessor :client
+
+  def initialize(client)
+    @cur = ""
+    self.client = client
+  end
+
+  def write(text)
+    @cur += text
+    if text == "\n"
+      self.flush
+    end
+  end
+
+  def flush
+    client.send_response(client.currentId, "editor.eval.ruby.print", {"msg" => @cur, "file" => File.basename(FileUtils.pwd)})
+  end
+end
 
 EM.run do
   EM.connect '127.0.0.1', ARGV[0].to_i, LtClient
