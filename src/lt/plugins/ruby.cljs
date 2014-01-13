@@ -36,7 +36,6 @@
                                   (do
                                     (notifos/done-working)
                                     (object/merge! this {:connected true})
-;;                                     (object/raise (:client @this) :connect)
                                     ;(object/destroy! this)
                                     )))))
 
@@ -152,7 +151,6 @@
 (defn try-connect [{:keys [info]}]
   (let [path (:path info)
         client (clients/client! :ruby.client)]
-    (object/add-tags client [:tcp.client])
     (check-all {:path path
                 :client client})
     client))
