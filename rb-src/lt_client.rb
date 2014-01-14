@@ -1,7 +1,10 @@
 $main_binding = binding
 
+require 'rubygems'
 require "logger"
+gem 'eventmachine'
 require 'eventmachine'
+gem 'json'
 require 'json'
 require 'fileutils'
 
@@ -114,6 +117,10 @@ class LtPrinter
   def self.safe_print(text)
     $stdout.write(text)
     $stdout.flush
+  end
+
+  def to_s
+    "LightTableConsole"
   end
 end
 

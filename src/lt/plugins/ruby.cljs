@@ -26,18 +26,18 @@
 
 (def shell (load/node-module "shelljs"))
 (def rb-path (files/join plugins/*plugin-dir* "rb-src/lt_client.rb"))
+(def runner-path (files/join plugins/*plugin-dir* "rb-src/lt_client_runner.sh"))
 
 (behavior ::on-out
                   :triggers #{:proc.out}
                   :reaction (fn [this data]
                               (let [out (.toString data)]
                                 (object/update! this [:buffer] str out)
-                                (when (> (.indexOf out "Connected") -1)
-                                  (do
-                                    (notifos/done-working)
-                                    (object/merge! this {:connected true})
-                                    ;(object/destroy! this)
-                                    )))))
+                                (if (> (.indexOf out "Connected") -1)
+                                    (do
+                                      (notifos/done-working)
+                                      (object/merge! this {:connected true}))
+                                    (object/update! this [:buffer] str data)))))
 
 (behavior ::on-error
                   :triggers #{:proc.error}
@@ -72,16 +72,27 @@
 
 (defn escape-spaces [s]
   (if (= files/separator "\\")
-    (str "\"" s "\"")
-    s))
+      (str "\"" s "\"")
+      s))
 
+(defn bash-escape-spaces [s]
+  (clojure.string/replace s " " "\\ ")
+;;   (str "\""  "\"")
+;;   s
+  )
 
 (defn run-rb [{:keys [path project-path name client] :as info}]
   (let [n (notifos/working "Connecting..")
         obj (object/create ::connecting-notifier client)
-        env {}]
-    (proc/exec {:command (or (:ruby-exe @ruby) "ruby")
-                :args [(escape-spaces rb-path) tcp/port (clients/->id client)]
+        env {}
+        command (if (:use-rvm? @ruby)
+                    "bash"
+                    (or (:ruby-exe @ruby) "ruby"))
+        args (if (:use-rvm? @ruby)
+                 [runner-path project-path (bash-escape-spaces rb-path) tcp/port (clients/->id client)]
+                 [(escape-spaces rb-path) tcp/port (clients/->id client)])]
+    (proc/exec {:command command
+                :args args
                 :cwd project-path
                 :env env
                 :obj obj})))
@@ -104,9 +115,10 @@
       (if (or (empty? cur)
               (roots cur)
               (= cur prev))
-        (assoc obj :project-path nil)
-        (if (and (not (files/exists? (files/join cur "Gemfile")))
-                 (files/dir? cur))
+        (assoc obj :project-path
+                   (if (files/dir? p) p (files/parent p)))
+        (if (and (files/dir? cur)
+                 (files/exists? (files/join cur "Gemfile")))
           (assoc obj :project-path cur)
           (recur (files/parent cur) cur))))))
 
@@ -163,7 +175,6 @@
 (behavior ::watch-src
                   :triggers #{:watch.src+}
                   :reaction (fn [editor cur meta src]
-                              (console/log "calling in the watch!")
                               (ruby-watch meta src)))
 
 (behavior ::on-eval
@@ -278,3 +289,13 @@
                   :exclusive true
                   :reaction (fn [this exe]
                               (object/merge! ruby {:ruby-exe exe})))
+
+(behavior ::use-rvm?
+            :triggers #{:object.instant}
+            :desc "Ruby: Use RVM?"
+            :type :user
+            :params [{:label "true/false"
+                      :type :boolean}]
+            :exclusive true
+            :reaction (fn [this use-rvm?]
+                        (object/merge! ruby {:use-rvm? use-rvm?})))
