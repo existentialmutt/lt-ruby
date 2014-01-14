@@ -11,6 +11,10 @@ No extra editing of the file is needed, and the result comes back in the nice Li
 3.  Open the Command Bar and choose `App: Reload Behaviors` or restart LightTable
 4.  Open up a ruby file, select some code and use `ctrl/cmd-enter` to eval it.  Use `ctrl/cmd-shift-enter` to eval the whole file (the result will be added off the first line).
 
+### RVM support
+
+Basic RVM support is in place.  To enable it add `(:lt.objs.langs.ruby/use-rvm? true)` to your User Behaviors.  Once that's in place the ruby repl will be run out of whatever RVM environment you've defined for that directory via rvmrc, etc.
+
 ## Requirements
 
 You'll need the `eventmachine` and `json` gems installed.  RVM users should set the path to their preferred ruby executable in `:lt.objs.langs.ruby/ruby-exe`
@@ -20,15 +24,19 @@ Developed on Mac OS X 10.7 with ruby 2.0.  I have no clue if it works on other p
 ## The Road Forward
 There are some rough edges still to clean up.  The evaluation environment could be better sandboxed, for instance.
 
-Once I get things working better for vanilla ruby, I plan to add better support for RVM and Rails.
+Basic RVM support is working (see above).  Support for loading a rails environment is on the way.
 
 It could also be nice to incorporate the advanced features from the stock LT plugins, such as results for individual statements within a block of eval'd code and watches.
 
 ## Acknowledgements
 
-The clojurescript / lighttable side are pretty much simple searches and replaces of the equivalent files from the Python plugin.  Thank you Chris and everyone else at Kodowa for getting me so inspired about a text editor.
+The clojurescript / lighttable side started by using the Python plugin as a template.  Thank you Chris and everyone else at Kodowa for getting me so inspired about a text editor.
 
 ## Changelog
+
+##### 0.0.3
+
+added support for loading an rvm environment.
 
 ##### 0.0.2
 
