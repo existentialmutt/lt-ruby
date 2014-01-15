@@ -1,4 +1,5 @@
-$main_binding = binding
+require File.dirname(__FILE__) + '/binding'
+$eval_binding = LightTable::Binding.new.get_binding
 
 require 'rubygems'
 require "logger"
@@ -80,7 +81,7 @@ class LtClient < EM::Connection
   end
 
   def eval_ruby(id, args)
-    result = $main_binding.eval(args["code"])
+    result = $eval_binding.eval(args["code"])
     if result.nil?
       send_response(id, "editor.eval.ruby.success", {"meta" => args["meta"]})
     else
@@ -119,8 +120,8 @@ class LtPrinter
     $stdout.flush
   end
 
-  def to_s
-    "LightTableConsole"
+  def to_str
+    "LtPrinter"
   end
 end
 
