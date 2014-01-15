@@ -36,6 +36,10 @@ The clojurescript / lighttable side started by using the Python plugin as a temp
 
 ## Changelog
 
+##### 0.0.5
+
+resyncing tag version w/ version in plugin.json
+
 ##### 0.0.4
 
 Basic rails loading via eval.
