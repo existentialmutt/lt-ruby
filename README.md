@@ -4,7 +4,7 @@ This plugin is an alpha implementation of a ruby instarepl for the [Light Table]
 
 No extra editing of the file is needed, and the result comes back in the nice Light Table widgets.  Like a true repl eval happens in its own binding so your state will persist across evals.
 
-## Installation
+## Installation and Usage
 
 1.  From LightTable's plugin manager, choose the available tab and double-click the "Ruby Instarepl" plugin to install it.
 2.  If your preferred ruby is not your system default, go to User Behaviors and add an entry for `(:lt.objs.langs.ruby/ruby-exe /path/to/ruby)`
@@ -15,6 +15,10 @@ No extra editing of the file is needed, and the result comes back in the nice Li
 
 Basic RVM support is in place.  To enable it add `(:lt.objs.langs.ruby/use-rvm? true)` to your User Behaviors.  Once that's in place the ruby repl will be run out of whatever RVM environment you've defined for that directory via rvmrc, etc.
 
+### Rails support
+
+As of 0.0.4, the plugin is able to load a Rails environment.  Just start up a Ruby connection in your project directory and then eval `require 'config/environment`
+
 ## Requirements
 
 You'll need the `eventmachine` and `json` gems installed.  RVM users should set the path to their preferred ruby executable in `:lt.objs.langs.ruby/ruby-exe`
@@ -22,9 +26,7 @@ You'll need the `eventmachine` and `json` gems installed.  RVM users should set 
 Developed on Mac OS X 10.7 with ruby 2.0.  I have no clue if it works on other platforms.
 
 ## The Road Forward
-There are some rough edges still to clean up.  The evaluation environment could be better sandboxed, for instance.
-
-Basic RVM support is working (see above).  Support for loading a rails environment is on the way.
+Basic RVM and Rails support support is working (see above).
 
 It could also be nice to incorporate the advanced features from the stock LT plugins, such as results for individual statements within a block of eval'd code and watches.
 
@@ -33,6 +35,10 @@ It could also be nice to incorporate the advanced features from the stock LT plu
 The clojurescript / lighttable side started by using the Python plugin as a template.  Thank you Chris and everyone else at Kodowa for getting me so inspired about a text editor.
 
 ## Changelog
+
+##### 0.0.4
+
+Basic rails loading via eval.
 
 ##### 0.0.3
 
