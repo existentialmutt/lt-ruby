@@ -77,18 +77,20 @@
 
 (defn bash-escape-spaces [s]
   (clojure.string/replace s " " "\\ ")
-;;   (str "\""  "\"")
-;;   s
   )
 
 (defn run-rb [{:keys [path project-path name client] :as info}]
   (let [n (notifos/working "Connecting..")
         obj (object/create ::connecting-notifier client)
-        env {}
-        command (if (:use-rvm? @ruby)
+        use-runner (or (::use-rvm? @ruby) (::use-rbenv? @ruby))
+        keys->env {::use-rbenv? :LT_USE_RBENV, ::use-rvm? :LT_USE_RVM}
+        env (zipmap (map keys->env
+                         (keys (select-keys @ruby (keys keys->env))))
+                    (cycle [true]))
+        command (if use-runner
                     "bash"
-                    (or (:ruby-exe @ruby) "ruby"))
-        args (if (:use-rvm? @ruby)
+                    (or (::ruby-exe @ruby) "ruby"))
+        args (if use-runner
                  [runner-path project-path (bash-escape-spaces rb-path) tcp/port (clients/->id client)]
                  [(escape-spaces rb-path) tcp/port (clients/->id client)])]
     (proc/exec {:command command
@@ -97,11 +99,8 @@
                 :env env
                 :obj obj})))
 
-
-
-
 (defn check-ruby [obj]
-  (assoc obj :ruby (or (:ruby-exe @ruby)
+  (assoc obj :ruby (or (::ruby-exe @ruby)
                          (.which shell "ruby"))))
 
 (defn check-client [obj]
@@ -288,14 +287,22 @@
                             :type :path}]
                   :exclusive true
                   :reaction (fn [this exe]
-                              (object/merge! ruby {:ruby-exe exe})))
+                              (object/merge! ruby {::ruby-exe exe})))
 
-(behavior ::use-rvm?
+(behavior ::use-rvm
             :triggers #{:object.instant}
-            :desc "Ruby: Use RVM?"
+            :desc "Ruby: Use RVM when loading REPL"
             :type :user
-            :params [{:label "true/false"
-                      :type :boolean}]
+            :params []
             :exclusive true
-            :reaction (fn [this use-rvm?]
-                        (object/merge! ruby {:use-rvm? use-rvm?})))
+            :reaction (fn [this]
+                        (object/merge! ruby {::use-rvm? true})))
+
+(behavior ::use-rbenv
+            :triggers #{:object.instant}
+            :desc "Ruby: Use rbenv when loading REPL"
+            :type :user
+            :params []
+            :exclusive true
+            :reaction (fn [this]
+                        (object/merge! ruby {::use-rbenv? true})))
