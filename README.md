@@ -23,9 +23,9 @@ As of 0.0.4, the plugin is able to load a Rails environment.  Just start up a Ru
 
 ## Requirements
 
-You'll need the `eventmachine` and `json` gems installed.  RVM users should set the path to their preferred ruby executable in `:lt.objs.langs.ruby/ruby-exe`
+You'll need the `eventmachine` and `json` gems installed.
 
-Developed on Mac OS X 10.7 with ruby 2.0.  I have no clue if it works on other platforms.
+Developed on Mac OS X 10.7 with ruby 2.0.  Seems to work OK with REE 1.8 and ruby 1.9.  I have no clue if it works on other platforms.
 
 ## The Road Forward
 Basic RVM and Rails support support is working (see above).
