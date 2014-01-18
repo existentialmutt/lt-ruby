@@ -7,15 +7,15 @@ No extra editing of the file is needed, and the result comes back in the nice Li
 ## Installation and Usage
 
 1.  From LightTable's plugin manager, choose the available tab and double-click the "Ruby Instarepl" plugin to install it.
-2.  If your preferred ruby is not your system default, go to User Behaviors and add an entry for `(:lt.objs.langs.ruby/ruby-exe "/path/to/ruby")`
+2.  If your preferred ruby is not your system default, go to User Behaviors and add an entry for `:editor.ruby [(:lt.objs.langs.ruby/ruby-exe "/path/to/ruby")]`
 3.  Open the Command Bar and choose `App: Reload Behaviors` or restart LightTable
 4.  Open up a ruby file, select some code and use `ctrl/cmd-enter` to eval it.  Use `ctrl/cmd-shift-enter` to eval the whole file (the result will be added off the first line).
 
 ### RVM and Rbenv support
 
-Support exists for both RVM and rbenv.  To enable RVM add `:lt.objs.langs.ruby/use-rvm` to your User Behaviors.  Once that's in place the ruby repl will be run out of whatever RVM environment you've defined for that directory via rvmrc, etc.
+Support exists for both RVM and rbenv.  To enable RVM add `:editor.ruby [(:lt.objs.langs.ruby/use-rvm)]` to your User Behaviors.  Once that's in place the ruby repl will be run out of whatever RVM environment you've defined for that directory via rvmrc, etc.
 
-Similarly, to enable rbenv add `:lt.objs.langs.ruby/use-rbenv`
+Similarly, to enable rbenv add `:editor.ruby [(:lt.objs.langs.ruby/use-rbenv)]`
 
 ### Rails support
 
@@ -23,9 +23,9 @@ As of 0.0.4, the plugin is able to load a Rails environment.  Just start up a Ru
 
 ## Requirements
 
-You'll need the `eventmachine` and `json` gems installed.  RVM users should set the path to their preferred ruby executable in `:lt.objs.langs.ruby/ruby-exe`
+You'll need the `eventmachine` and `json` gems installed.
 
-Developed on Mac OS X 10.7 with ruby 2.0.  I have no clue if it works on other platforms.
+Developed on Mac OS X 10.7 with ruby 2.0.  Seems to work OK with REE 1.8 and ruby 1.9.  I have no clue if it works on other platforms.
 
 ## The Road Forward
 Basic RVM and Rails support support is working (see above).
@@ -43,7 +43,7 @@ Thanks also to my employer, [Green River](http://www.greenriver.com) for support
 ##### 0.0.6
 
 rbenv support
-Changed RVM support behavior from `(:lt.objs.langs.ruby/use-rvm? true)` to `:lt.objs.langs.ruby/use-rvm` to better match style of other boolean behaviors.
+Changed RVM support behavior from `:editor.ruby [(:lt.objs.langs.ruby/use-rvm? true)]` to `:editor.ruby [(:lt.objs.langs.ruby/use-rvm)]` to better match style of other boolean behaviors.
 
 ##### 0.0.5
 
