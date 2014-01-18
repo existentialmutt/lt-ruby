@@ -1,6 +1,3 @@
-require File.dirname(__FILE__) + '/binding'
-$eval_binding = LightTable::Binding.new.get_binding
-
 require 'rubygems'
 require "logger"
 gem 'eventmachine'
@@ -81,7 +78,7 @@ class LtClient < EM::Connection
   end
 
   def eval_ruby(id, args)
-    result = $eval_binding.eval(args["code"])
+    result = TOPLEVEL_BINDING.eval(args["code"], args["path"])
     if result.nil?
       send_response(id, "editor.eval.ruby.success", {"meta" => args["meta"]})
     else
