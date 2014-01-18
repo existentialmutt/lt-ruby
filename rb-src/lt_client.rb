@@ -123,6 +123,11 @@ class LtPrinter
   def to_str
     "LtPrinter"
   end
+
+  def puts(text)
+    write(text)
+    flush
+  end
 end
 
 EM.run do
