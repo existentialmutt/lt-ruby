@@ -78,18 +78,32 @@ class LtClient < EM::Connection
   end
 
   def eval_ruby(id, args)
-    lineno = (args["meta"] && args["meta"]["start"] && args["meta"]["start"] + 1)
-    result = TOPLEVEL_BINDING.eval(args["code"], args["path"], lineno)
+    eval_args = [args["code"]]
+
+    if args["path"]
+      eval_args << args["path"]
+      if args["meta"] && args["meta"]["start"]
+        eval_args << args["meta"]["start"] + 1
+      end
+    end
+
+    result = TOPLEVEL_BINDING.eval(*eval_args)
     if result.nil?
-      send_response(id, "editor.eval.ruby.success", {"meta" => args["meta"]})
+      send_response(id, "editor.eval.ruby.success", {"meta" => response_meta(args["meta"])})
     else
-      send_response(id, "editor.eval.ruby.result", {"result" => result, "meta" => args["meta"]})
+      send_response(id, "editor.eval.ruby.result", {"result" => result, "meta" => response_meta(args["meta"])})
     end
   rescue Exception => e
     exception_and_backtrace = [e.inspect, e.backtrace].flatten.join("\n")
-    send_response(id, "editor.eval.ruby.exception", {"ex" => exception_and_backtrace, "meta" => args["meta"]})
+    send_response(id, "editor.eval.ruby.exception", {"ex" => exception_and_backtrace, "meta" => response_meta(args["meta"])})
   end
 
+  def response_meta(request_meta)
+    result = request_meta || {}
+    result["start"] ||= 1
+    result["end"] ||= 1
+    result
+  end
 
 end
 
