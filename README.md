@@ -40,30 +40,36 @@ Thanks also to my employer, [Green River](http://www.greenriver.com) for support
 
 ## Changelog
 
+##### 0.0.7
+
+- fix for issue #12: reporting exceptions from whole-file eval.
+- `__FILE__` now gets set correctly
+- exceptions get correct line numbers in stack trace
+
 ##### 0.0.6
 
-rbenv support
-Changed RVM support behavior from `:editor.ruby [(:lt.objs.langs.ruby/use-rvm? true)]` to `:editor.ruby [(:lt.objs.langs.ruby/use-rvm)]` to better match style of other boolean behaviors.
+- rbenv support
+- Changed RVM support behavior from `:editor.ruby [(:lt.objs.langs.ruby/use-rvm? true)]` to `:editor.ruby [(:lt.objs.langs.ruby/use-rvm)]` to better match style of other boolean behaviors.
 
 ##### 0.0.5
 
-resyncing tag version w/ version in plugin.json
+- resyncing tag version w/ version in plugin.json
 
 ##### 0.0.4
 
-Basic rails loading via eval.
+- Basic rails loading via eval.
 
 ##### 0.0.3
 
-added support for loading an rvm environment.
+- added support for loading an rvm environment.
 
 ##### 0.0.2
 
-Numerous bugfixes and general less-janky-making.  You no longer to need to manually create the connection (just select some code and eval).
+- Numerous bugfixes and general less-janky-making.  You no longer to need to manually create the connection (just select some code and eval).
 
 #####  0.0.1
 
-Initial release with eval for whole files and selections
+- Initial release with eval for whole files and selections
 
 ###License
 
