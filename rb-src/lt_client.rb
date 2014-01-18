@@ -78,7 +78,8 @@ class LtClient < EM::Connection
   end
 
   def eval_ruby(id, args)
-    result = TOPLEVEL_BINDING.eval(args["code"], args["path"])
+    lineno = (args["meta"] && args["meta"]["start"] && args["meta"]["start"] + 1)
+    result = TOPLEVEL_BINDING.eval(args["code"], args["path"], lineno)
     if result.nil?
       send_response(id, "editor.eval.ruby.success", {"meta" => args["meta"]})
     else
