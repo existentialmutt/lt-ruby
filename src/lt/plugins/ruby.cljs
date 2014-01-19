@@ -198,6 +198,43 @@
                                 (object/raise ruby :eval! {:origin editor
                                                              :info info}))))
 
+;; test if we increased the length of the doc by 1 and have a blank on the last line
+(behavior ::eval-on-change
+          :triggers #{:change}
+          :debounce 300
+          :reaction (fn [editor cm delta]
+                      (console/log "Hi!")
+                      (let [
+                            doc (.-doc cm)
+                            new-lc (.lastLine doc)
+                            last-line (.-text (.getLineHandle doc new-lc))
+                            old-lc (or (::line-count @editor)
+                                       (do (object/merge! editor {::line-count 0})
+                                           (::line-count @editor)))]
+                        (console/log (str "old" old-lc "new" new-lc))
+                        (.log js/console last-line)
+                        (if (and (= last-line "")
+                                 (= 1 (- new-lc old-lc)))
+                            (console/log "Eval!")
+                            (console/log "Don't Eval!"))
+                        (object/merge! editor {::line-count new-lc}))))
+
+(behavior ::inspect-on-change
+          :triggers #{:change}
+          :debounce 300
+          :reaction (fn [this cm delta]
+                        (console/log "Hi")
+                        (console/log "This")
+                        (console/log (str (object/->id this)))
+                        (console/log "LineCount")
+                        (.log js/console (.lineCount (.doc cm)))
+                        (console/log "Other")
+                        (.log js/console delta)
+                        (console/log "Done!")
+                        "Hi!"
+                      ))
+
+
 (behavior ::ruby-watch
                   :triggers #{:editor.eval.ruby.watch}
                   :reaction (fn [editor res]

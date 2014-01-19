@@ -8,6 +8,8 @@
                      :lt.objs.langs.ruby/ruby-watch
                      :lt.objs.langs.ruby/ruby-image
                      :lt.objs.langs.ruby/watch-src
+;;                      :lt.objs.langs.ruby/inspect-on-change
+                     :lt.objs.langs.ruby/eval-on-change
                      [:lt.object/add-tag :watchable]]
      :files [(:lt.objs.files/file-types [{:name "Ruby" :exts [:rb] :mime "text/x-ruby" :tags [:editor.ruby]}])]
      :ruby.lang [:lt.objs.langs.ruby/eval! :lt.objs.langs.ruby/connect]}}
