@@ -1,8 +1,8 @@
 ## Ruby Instarepl for Light Table
 
-This plugin is an alpha implementation of a ruby instarepl for the [Light Table](http://www.lighttable.com) IDE.  It can evaluate the contents of a ruby file and print the result of the last statement up at the top line.  It can also eval selections of ruby code and print the result next to it.
+This plugin is an alpha implementation of a ruby instarepl for the [Light Table](http://www.lighttable.com) IDE.  It can evaluate the contents of a ruby file and print the result of the last statement at the bottom.  It can also eval selections of ruby code and print the result next to it.
 
-No extra editing of the file is needed, and the result comes back in the nice Light Table widgets.  Like a true repl eval happens in its own binding so your state will persist across evals.
+No extra editing of the file is needed, and the result comes back in the nice Light Table widgets.  Like a true repl your state will persist between evals.
 
 ## Installation
 
@@ -25,7 +25,7 @@ Developed on Mac OS X 10.7 with ruby 2.0.  Seems to work OK with REE 1.8 and rub
 - `ctrl/cmd-enter` evals the selected text and prints results inline.  If no text is selected it evals the current line.
 
 ### Watches
-Watches enable you to see the results of individual expressions within a whole-file eval.
+Watches enable you to see the results of individual expressions within an eval.
 
 - `alt-w` adds a watch for the selection and evaluates it
 - `alt-shift-w` removes the watch for the selection
