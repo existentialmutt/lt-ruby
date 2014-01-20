@@ -198,6 +198,8 @@
                                 (object/raise ruby :eval! {:origin editor
                                                              :info info}))))
 
+
+
 ;; test if we increased the length of the doc by 1 and have a blank on the last line
 (behavior ::eval-on-change
           :triggers #{:change}
@@ -212,7 +214,12 @@
                                        (do (object/merge! editor {::line-count 0})
                                            (::line-count @editor)))]
                         (console/log (str "old" old-lc "new" new-lc))
-                        (.log js/console last-line)
+                        (.log js/console doc)
+                        (console/log (-> doc (.-children)
+                                             (last)
+                                             (.-lines)
+                                             (butlast) (last)
+                                             (.-text)))
                         (if (and (= last-line "")
                                  (= 1 (- new-lc old-lc)))
                             (console/log "Eval!")
