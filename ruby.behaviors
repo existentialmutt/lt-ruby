@@ -1,13 +1,22 @@
 {:+ {:app [(:lt.objs.plugins/load-js ["codemirror/ruby.js" "ruby instarepl_compiled.js"])]
      :clients []
      :editor.ruby [:lt.objs.langs.ruby/ruby-exception :lt.objs.langs.ruby/on-eval
-                     :lt.objs.langs.ruby/on-eval.one
-                     :lt.objs.langs.ruby/ruby-result
-                     :lt.objs.langs.ruby/ruby-success
-                     :lt.objs.langs.ruby/ruby-printer
-                     :lt.objs.langs.ruby/ruby-watch
-                     :lt.objs.langs.ruby/ruby-image
-                     :lt.objs.langs.ruby/watch-src
-                     [:lt.object/add-tag :watchable]]
+                   :lt.objs.langs.ruby/on-eval.one
+                   :lt.objs.langs.ruby/ruby-result
+                   :lt.objs.langs.ruby/ruby-success
+                   :lt.objs.langs.ruby/ruby-printer
+                   :lt.objs.langs.ruby/ruby-watch
+                   :lt.objs.langs.ruby/ruby-image
+                   :lt.objs.langs.ruby/watch-src
+
+                   ;; we don't seem to be able to unload part of watchable, so we're manually adding the pieces we need
+;;                    [:lt.object/add-tag :watchable]
+                   :lt.plugins.watches/watch!
+                   :lt.plugins.watches/unwatch!
+                   ]
      :files [(:lt.objs.files/file-types [{:name "Ruby" :exts [:rb] :mime "text/x-ruby" :tags [:editor.ruby]}])]
-     :ruby.lang [:lt.objs.langs.ruby/eval! :lt.objs.langs.ruby/connect]}}
+     :ruby.lang [:lt.objs.langs.ruby/eval! :lt.objs.langs.ruby/connect]}
+
+;;  :- {:editor.ruby [:lt.plugins.watches/eval-on-watch-or-unwatch]}
+
+ }

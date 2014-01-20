@@ -173,7 +173,6 @@
 (behavior ::watch-src
                   :triggers #{:watch.src+}
                   :reaction (fn [editor cur meta src]
-                              (.log js/console meta)
                               (ruby-watch meta src)))
 
 (behavior ::on-eval
