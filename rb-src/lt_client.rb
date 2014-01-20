@@ -23,6 +23,7 @@ class LtClient < EM::Connection
 
   def post_init
     logger.debug("Client Initialized")
+    self.class.active_client = self
   end
 
   def connection_completed
@@ -105,6 +106,14 @@ class LtClient < EM::Connection
     result
   end
 
+  @@active_client = nil
+  def self.active_client=(a)
+    @@active_client = a
+  end
+  def self.active_client
+    @@active_client
+  end
+
 end
 
 class LtPrinter
@@ -139,6 +148,12 @@ class LtPrinter
   def puts(text)
     write(text)
     flush
+  end
+end
+
+class LtWatch
+  def self.watch(expr, meta)
+    LtClient.active_client.send_response(nil, "clients.raise-on-object", [meta["obj"], "editor.eval.ruby.watch", {"meta" => meta, "result" => expr.inspect}]);
   end
 end
 

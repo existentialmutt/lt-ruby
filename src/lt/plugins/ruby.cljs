@@ -167,9 +167,8 @@
     client))
 
 (defn ruby-watch [meta src]
-  (let [meta (js/JSON.stringify (clj->js meta))]
-    ;; FIXME
-    (str "sys.modules['lttools'].__dict__['watch'](" src ", " meta ")")))
+  (let [meta-str (str "%q(" (js/JSON.stringify (clj->js meta)) ")")]
+    (str "LtWatch.watch(" src ", JSON.parse(" meta-str "))")))
 
 (behavior ::watch-src
                   :triggers #{:watch.src+}
