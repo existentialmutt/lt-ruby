@@ -173,6 +173,7 @@
 (behavior ::watch-src
                   :triggers #{:watch.src+}
                   :reaction (fn [editor cur meta src]
+                              (.log js/console meta)
                               (ruby-watch meta src)))
 
 (behavior ::on-eval
@@ -180,20 +181,23 @@
                   :reaction (fn [editor]
                               (object/raise ruby :eval! {:origin editor
                                                              :info (assoc (@editor :info)
-                                                                     :code (watches/watched-range editor nil nil ruby-watch))})))
+                                                                     :code (watches/watched-range editor nil nil ruby-watch)
+                                                                     :meta {:start 0, :end (ed/last-line editor)})})))
 
 (behavior ::on-eval.one
                   :triggers #{:eval.one}
                   :reaction (fn [editor]
-                              (let [code (watches/watched-range editor nil nil ruby-watch)
-                                    pos (ed/->cursor editor)
+                              (let [pos (ed/->cursor editor)
+                                    code (if (ed/selection? editor)
+                                             (watches/watched-range editor nil nil ruby-watch)
+                                             (ed/line editor (:line pos)))
                                     info (:info @editor)
                                     info (if (ed/selection? editor)
                                            (assoc info
                                              :code (ed/selection editor)
                                              :meta {:start (-> (ed/->cursor editor "start") :line)
                                                     :end (-> (ed/->cursor editor "end") :line)})
-                                           (assoc info :pos pos :code code))]
+                                           (assoc info :pos pos :code code :meta {:start (:line pos) :end (:line pos)}))]
                                 (object/raise ruby :eval! {:origin editor
                                                              :info info}))))
 

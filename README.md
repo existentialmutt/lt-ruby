@@ -9,7 +9,7 @@ No extra editing of the file is needed, and the result comes back in the nice Li
 1.  From LightTable's plugin manager, choose the available tab and double-click the "Ruby Instarepl" plugin to install it.
 2.  If your preferred ruby is not your system default, go to User Behaviors and add an entry for `:editor.ruby [(:lt.objs.langs.ruby/ruby-exe "/path/to/ruby")]`
 3.  Open the Command Bar and choose `App: Reload Behaviors` or restart LightTable
-4.  Open up a ruby file, select some code and use `ctrl/cmd-enter` to eval it.  Use `ctrl/cmd-shift-enter` to eval the whole file (the result will be added off the first line).
+4.  Open up a ruby file, select some code and use `ctrl/cmd-enter` to eval it.  Use `ctrl/cmd-shift-enter` to eval the whole file.
 
 ## Requirements
 
@@ -21,13 +21,13 @@ Developed on Mac OS X 10.7 with ruby 2.0.  Seems to work OK with REE 1.8 and rub
 
 ### Evaluating Ruby
 
-- `ctrl/cmd-shift-enter` evals a whole file and prints the result of the last statement up a the top.
-- `ctrl/cmd-enter` evals the selected text and prints results inline
+- `ctrl/cmd-shift-enter` evals a whole file and prints the result of the last statement.
+- `ctrl/cmd-enter` evals the selected text and prints results inline.  If no text is selected it evals the current line.
 
 ### Watches
 Watches enable you to see the results of individual expressions within a whole-file eval.
 
-- `alt-w` adds a watch for the selection and evals the whole file.  
+- `alt-w` adds a watch for the selection and evaluates it
 - `alt-shift-w` removes the watch for the selection
 
 ### RVM and Rbenv support
@@ -56,6 +56,8 @@ Thanks also to my employer, [Green River](http://www.greenriver.com) for support
 ##### 0.0.8
 
 - implemented watches
+- moved result of whole-file eval down to the bottom
+- `ctrl/cmd-enter` evals current line if no selection
 
 ##### 0.0.7
 
