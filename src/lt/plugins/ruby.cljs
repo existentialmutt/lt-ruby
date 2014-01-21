@@ -252,7 +252,7 @@
                   :triggers #{:editor.eval.ruby.incomplete}
                   :reaction (fn [editor res]
                               (notifos/done-working)
-                              (object/raise editor :editor.result "..." {:line (-> res :meta :end)
+                              (object/raise editor :editor.result "…" {:line (-> res :meta :end)
                                                                        :start-line (-> res :meta :start)})))
 
 (behavior ::ruby-exception
