@@ -222,10 +222,10 @@
                                     info (-> (:info @editor)
                                              (assoc :code code)
                                              (assoc :meta {:start line  :end line}))]
-                                when (not (.test #"^\s*$" code))
-                                  (object/raise ruby :eval! {:origin editor :info info})))
+                                (when (and (not (empty? code))
+                                           (not (.test #"^\s*$" code)))
+                                  (object/raise ruby :eval! {:origin editor :info info}))))
                         (object/merge! editor {::line-count new-lc}))))
-
 
 (behavior ::ruby-watch
                   :triggers #{:editor.eval.ruby.watch}

@@ -84,7 +84,8 @@ class LtClient < EM::Connection
   end
 
   def eval_ruby(id, args)
-    eval_candidate = eval_queue + "\n" + args["code"]
+    eval_candidate = self.eval_queue + "\n" + args["code"]
+    logger.debug "Eval Candidate #{eval_candidate}"
     if complete_expression?(eval_candidate)
       eval_args = [eval_candidate]
       if args["path"]
@@ -100,9 +101,10 @@ class LtClient < EM::Connection
       else
         send_response(id, "editor.eval.ruby.result", {"result" => result, "meta" => response_meta(args["meta"])})
       end
-
+      self.eval_queue = ""
     else
-      eval_queue = eval_candidate
+      self.eval_queue = eval_candidate
+      logger.debug("Queued Code: #{self.eval_queue}")
       send_response(id, "editor.eval.ruby.incomplete", {"meta" => response_meta(args["meta"])})
     end
 
