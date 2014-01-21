@@ -4,18 +4,22 @@ gem 'eventmachine'
 require 'eventmachine'
 gem 'json'
 require 'json'
+gem 'method_source'
+require 'method_source'
 require 'fileutils'
 
 LOGFILE = "lt_client.log"
 logger = Logger.new(LOGFILE)
 
-logger.debug "Server Started with command:"
+logger.debug "Client started with command:"
 logger.debug($0)
 logger.debug(ARGV)
 
 class LtClient < EM::Connection
 
-  attr_accessor :currentId
+  include MethodSource::CodeHelpers
+
+  attr_accessor :currentId, :eval_queue
 
   def logger
     @_logger = Logger.new(LOGFILE)
@@ -40,6 +44,7 @@ class LtClient < EM::Connection
     logger.debug(client_info)
     $stdout = LtPrinter.new(self)
     $stderr = LtPrinter.new(self)
+    self.eval_queue = ""
   end
 
   def receive_data(data)
@@ -79,21 +84,28 @@ class LtClient < EM::Connection
   end
 
   def eval_ruby(id, args)
-    eval_args = [args["code"]]
-
-    if args["path"]
-      eval_args << args["path"]
-      if args["meta"] && args["meta"]["start"]
-        eval_args << args["meta"]["start"] + 1
+    eval_candidate = eval_queue + "\n" + args["code"]
+    if complete_expression?(eval_candidate)
+      eval_args = [eval_candidate]
+      if args["path"]
+        eval_args << args["path"]
+        if args["meta"] && args["meta"]["start"]
+          eval_args << args["meta"]["start"] + 1
+        end
       end
+
+      result = TOPLEVEL_BINDING.eval(*eval_args)
+      if result.nil?
+        send_response(id, "editor.eval.ruby.success", {"meta" => response_meta(args["meta"])})
+      else
+        send_response(id, "editor.eval.ruby.result", {"result" => result, "meta" => response_meta(args["meta"])})
+      end
+
+    else
+      eval_queue = eval_candidate
+      send_response(id, "editor.eval.ruby.incomplete", {"meta" => response_meta(args["meta"])})
     end
 
-    result = TOPLEVEL_BINDING.eval(*eval_args)
-    if result.nil?
-      send_response(id, "editor.eval.ruby.success", {"meta" => response_meta(args["meta"])})
-    else
-      send_response(id, "editor.eval.ruby.result", {"result" => result, "meta" => response_meta(args["meta"])})
-    end
   rescue Exception => e
     exception_and_backtrace = [e.inspect, e.backtrace].flatten.join("\n")
     send_response(id, "editor.eval.ruby.exception", {"ex" => exception_and_backtrace, "meta" => response_meta(args["meta"])})

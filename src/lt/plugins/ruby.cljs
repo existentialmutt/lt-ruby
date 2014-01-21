@@ -202,46 +202,29 @@
 
 
 
-;; test if we increased the length of the doc by 1 and have a blank on the last line
+;; test if we increased the length of the doc by 1 and have a blank for the last line
 (behavior ::eval-on-change
           :triggers #{:change}
           :debounce 300
-          :reaction (fn [editor cm delta]
-                      (console/log "Hi!")
+          :reaction (fn [editor _cm delta]
                       (let [
-                            doc (.-doc cm)
-                            new-lc (.lastLine doc)
-                            last-line (.-text (.getLineHandle doc new-lc))
+                            doc (ed/get-doc editor)
+                            new-lc (ed/last-line editor)
+                            last-line (ed/line editor new-lc)
+
                             old-lc (or (::line-count @editor)
                                        (do (object/merge! editor {::line-count 0})
                                            (::line-count @editor)))]
-                        (console/log (str "old" old-lc "new" new-lc))
-                        (.log js/console doc)
-                        (console/log (-> doc (.-children)
-                                             (last)
-                                             (.-lines)
-                                             (butlast) (last)
-                                             (.-text)))
-                        (if (and (= last-line "")
+                        (when (and (.test #"^\s*$" last-line)
                                  (= 1 (- new-lc old-lc)))
-                            (console/log "Eval!")
-                            (console/log "Don't Eval!"))
+                              (let [code (ed/line editor (- new-lc 1))
+                                    line (- new-lc 1)
+                                    info (-> (:info @editor)
+                                             (assoc :code code)
+                                             (assoc :meta {:start line  :end line}))]
+                                when (not (.test #"^\s*$" code))
+                                  (object/raise ruby :eval! {:origin editor :info info})))
                         (object/merge! editor {::line-count new-lc}))))
-
-(behavior ::inspect-on-change
-          :triggers #{:change}
-          :debounce 300
-          :reaction (fn [this cm delta]
-                        (console/log "Hi")
-                        (console/log "This")
-                        (console/log (str (object/->id this)))
-                        (console/log "LineCount")
-                        (.log js/console (.lineCount (.doc cm)))
-                        (console/log "Other")
-                        (.log js/console delta)
-                        (console/log "Done!")
-                        "Hi!"
-                      ))
 
 
 (behavior ::ruby-watch
@@ -263,6 +246,13 @@
                   :reaction (fn [editor res]
                               (notifos/done-working)
                               (object/raise editor :editor.result "✓" {:line (-> res :meta :end)
+                                                                       :start-line (-> res :meta :start)})))
+
+(behavior ::ruby-incomplete
+                  :triggers #{:editor.eval.ruby.incomplete}
+                  :reaction (fn [editor res]
+                              (notifos/done-working)
+                              (object/raise editor :editor.result "..." {:line (-> res :meta :end)
                                                                        :start-line (-> res :meta :start)})))
 
 (behavior ::ruby-exception
