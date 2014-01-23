@@ -364,8 +364,7 @@
 
 (defn live-off [editor]
   (object/remove-tags editor [:editor.ruby.live])
-  (.log js/console (::live-toggler editor))
-  (when-let [toggler (::live-toggler editor)] (object/merge! toggler {:live false})))
+  (when-let [toggler (::live-toggler @editor)] (object/merge! toggler {:live false})))
 
 (defn live-on [editor]
   ;; connect if necessary
@@ -392,6 +391,5 @@
                   :desc "Ruby Instarepl: Toggle live mode"
                   :exec (fn []
                           (when-let [ed (pool/last-active)]
-                            (.log js/console (keys @ed))
                             (object/raise ed :live.toggle!)
                             ))})
