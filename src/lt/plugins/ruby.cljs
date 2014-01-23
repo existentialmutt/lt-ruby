@@ -10,6 +10,7 @@
             [lt.objs.popup :as popup]
             [lt.objs.platform :as platform]
             [lt.objs.editor :as ed]
+            [lt.objs.editor.pool :as pool]
             [lt.objs.plugins :as plugins]
             [lt.plugins.watches :as watches]
             [lt.objs.proc :as proc]
@@ -17,6 +18,9 @@
             [lt.objs.clients :as clients]
             [lt.objs.notifos :as notifos]
             [lt.util.load :as load]
+            [crate.binding :refer [bound subatom]]
+            [crate.core :as crate]
+            [lt.util.dom :as dom]
             [lt.util.cljs :refer [js->clj]])
   (:require-macros [lt.macros :refer [behavior defui]]))
 
@@ -342,3 +346,52 @@
             :exclusive true
             :reaction (fn [this]
                         (object/merge! ruby {::use-rbenv? true})))
+
+(defui live-toggler [this]
+  [:div#instarepl [:span {:class (bound this #(str "livetoggler " (when-not (:live %) "off")))} "live"]]
+  :click (fn [e]
+           (dom/prevent e)
+           (object/raise (:editor @this) :live.toggle!)))
+
+(object/object* ::live-toggler
+                :tags #{}
+                :name "Live Mode Toggler"
+                :live true
+                :init (fn [this editor]
+                        (object/merge! this {:editor editor})
+                        (dom/prepend (object/->content editor) (live-toggler this))
+                        ))
+
+(defn live-off [editor]
+  (object/remove-tags editor [:editor.ruby.live])
+  (.log js/console (::live-toggler editor))
+  (when-let [toggler (::live-toggler editor)] (object/merge! toggler {:live false})))
+
+(defn live-on [editor]
+  ;; connect if necessary
+  (eval/get-client! {:command :editor.eval.ruby
+                     :origin editor
+                     :info (:info @editor)
+                     :create try-connect})
+;;   ;; add the toggle button if necessary
+  (when-not (::live-toggler @editor)
+    (object/merge! editor {::live-toggler (object/create ::live-toggler editor)}))
+  (object/add-tags editor [:editor.ruby.live])
+  (object/merge! (::live-toggler @editor) {:live true})
+  )
+
+(behavior ::live-toggle
+          :triggers #{:live.toggle!}
+          :reaction (fn [editor]
+                      (if (object/has-tag? editor :editor.ruby.live)
+                          (live-off editor)
+                          (live-on editor))))
+
+
+(cmd/command {:command :instarepl.ruby.toggle-live
+                  :desc "Ruby Instarepl: Toggle live mode"
+                  :exec (fn []
+                          (when-let [ed (pool/last-active)]
+                            (.log js/console (keys @ed))
+                            (object/raise ed :live.toggle!)
+                            ))})

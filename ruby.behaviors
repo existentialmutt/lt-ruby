@@ -7,14 +7,16 @@
                    :lt.objs.langs.ruby/ruby-printer
                    :lt.objs.langs.ruby/ruby-watch
                    :lt.objs.langs.ruby/ruby-incomplete
+                   :lt.objs.langs.ruby/live-toggle
 ;;                    :lt.objs.langs.ruby/ruby-image
                    :lt.objs.langs.ruby/watch-src
-                   :lt.objs.langs.ruby/eval-on-change
                    ;; we don't seem to be able to unload part of watchable, so we're manually adding the pieces we need
 ;;                    [:lt.object/add-tag :watchable]
                    :lt.plugins.watches/watch!
                    :lt.plugins.watches/unwatch!
                    ]
+     :editor.ruby.live [:lt.objs.langs.ruby/eval-on-change]
+
      :files [(:lt.objs.files/file-types [{:name "Ruby" :exts [:rb] :mime "text/x-ruby" :tags [:editor.ruby]}])]
      :ruby.lang [:lt.objs.langs.ruby/eval! :lt.objs.langs.ruby/connect]}
 
