@@ -1,8 +1,10 @@
 ## Ruby Instarepl for Light Table
 
-This plugin is an alpha implementation of a ruby instarepl for the [Light Table](http://www.lighttable.com) IDE.  It can evaluate the contents of a ruby file and print the result of the last statement at the bottom.  It can also eval selections of ruby code and print the result next to it.
+This plugin is an alpha implementation of a ruby instarepl for the [Light Table](http://www.lighttable.com) IDE.  On demand, it can evaluate the contents of a ruby file and print the result of the last statement at the bottom.  It can also eval selections of ruby code and print the result next to it.
 
 No extra editing of the file is needed, and the result comes back in the nice Light Table widgets.  Like a true repl your state will persist between evals.
+
+There is also a basic Live Mode/Instarepl that will evaluate lines of code as you type (see below).
 
 ## Installation
 
@@ -13,22 +15,32 @@ No extra editing of the file is needed, and the result comes back in the nice Li
 
 ## Requirements
 
-You'll need the `eventmachine` and `json` gems installed.
+You'll need the `eventmachine`, `json`, and `method_source` gems installed.
 
 Developed on Mac OS X 10.7 with ruby 2.0.  Seems to work OK with REE 1.8 and ruby 1.9.  I have no clue if it works on other platforms.
 
 ## Usage
 
-### Evaluating Ruby
+### Evaluating Ruby on Demand
 
 - `ctrl/cmd-shift-enter` evals a whole file and prints the result of the last statement.
 - `ctrl/cmd-enter` evals the selected text and prints results inline.  If no text is selected it evals the current line.
 
-### Watches
-Watches enable you to see the results of individual expressions within an eval.
+If the code sent for evaluation is not a complete statement, then the inline result will show `…` The code will be saved, and any future code sent for evaluation will be concatenated and evaled together.
 
-- `alt-w` adds a watch for the selection and evaluates it
+### Live Mode aka "Instarepl"
+
+A basic live evaluation mode has been implemented.  To enable it for your editor, type `ctrl/cmd-space` and choose `Ruby Instarepl: Toggle live mode`.
+
+When enabled, new lines typed at the end of the file will automatically be sent to the repl process for evaluation.
+
+### Watches
+Watches enable you to see the results of individual expressions that were executed as part of an eval.
+
+- `alt-w` adds a watch for the selection
 - `alt-shift-w` removes the watch for the selection
+
+At present, you have to re-evaluate the whole file with `ctrl/cmd-shift enter` before your watches will be active.  This will be fixed in a future version (see #14)
 
 ### RVM and Rbenv support
 
@@ -41,9 +53,10 @@ Similarly, to enable rbenv add `:editor.ruby [(:lt.objs.langs.ruby/use-rbenv)]`
 As of v0.0.4, the plugin is able to load a Rails environment.  Just start up a Ruby connection in your project directory and then eval `require 'config/environment'`
 
 ## The Road Forward
-Basic RVM and Rails support support is working (see above).
+I hope to add more features for Rails in future versions.  Also the live mode could be enhanced to enable automatic watches.
 
-It could also be nice to incorporate the advanced features from the stock LT plugins, such as results for individual statements within a block of eval'd code.
+I try to plan out features in the [Wish List](https://github.com/existentialmutt/lt-ruby/issues?labels=Wish+List&page=1&state=open)
+
 
 ## Acknowledgements
 
@@ -52,6 +65,12 @@ The clojurescript / lighttable side started by using the Python plugin as a temp
 Thanks also to my employer, [Green River](http://www.greenriver.com) for supporting development of this plugin.
 
 ## Changelog
+
+##### 0.0.9
+
+- incomplete eval
+- basic live mode
+- require `method_source` gem
 
 ##### 0.0.8
 
