@@ -354,12 +354,22 @@
            (object/raise (:editor @this) :live.toggle!)))
 
 (object/object* ::live-toggler
-                :tags #{}
+                :tags #{::live-toggler}
                 :name "Live Mode Toggler"
                 :live true
                 :init (fn [this editor]
                         (object/merge! this {:editor editor})
-                        (dom/prepend (object/->content editor) (live-toggler this))
+;;                         (dom/prepend (object/->content editor) (live-toggler this))
+;;                         (let [frame (dom/parent (object/->content editor))
+;;                               editor-content (dom/remove (object/->content editor))
+;;                               wrapped-toggler (dom/append (live-toggler this))]
+;;                           (dom/append wrapped-toggler editor-content))
+                        (let [editor-content (object/->content editor)
+                              frame (dom/parent editor-content)
+                              toggler (live-toggler this)]
+                          (dom/append toggler editor-content)
+                          (dom/append frame toggler)
+                          )
                         ))
 
 (defn live-off [editor]
@@ -384,7 +394,9 @@
           :reaction (fn [editor]
                       (if (object/has-tag? editor :editor.ruby.live)
                           (live-off editor)
-                          (live-on editor))))
+                          (live-on editor))
+                      (ed/focus editor)))
+
 
 
 (cmd/command {:command :instarepl.ruby.toggle-live
