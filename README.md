@@ -66,6 +66,10 @@ Thanks also to my employer, [Green River](http://www.greenriver.com) for support
 
 ## Changelog
 
+##### 0.0.10
+
+- fixed a bug with result format sent to LT
+
 ##### 0.0.9
 
 - incomplete eval
