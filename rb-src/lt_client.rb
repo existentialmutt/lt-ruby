@@ -99,7 +99,7 @@ class LtClient < EM::Connection
       if result.nil?
         send_response(id, "editor.eval.ruby.success", {"meta" => response_meta(args["meta"])})
       else
-        send_response(id, "editor.eval.ruby.result", {"result" => result, "meta" => response_meta(args["meta"])})
+        send_response(id, "editor.eval.ruby.result", {"result" => result.inspect, "meta" => response_meta(args["meta"])})
       end
       self.eval_queue = ""
     else
