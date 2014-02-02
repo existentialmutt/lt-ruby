@@ -66,6 +66,10 @@ Thanks also to my employer, [Green River](http://www.greenriver.com) for support
 
 ## Changelog
 
+##### 0.0.11
+
+- ruby client's debug log must now be explicitly enabled by setting `:editor.ruby [:lt.objs.langs.ruby/client-enable-logging]`  in User Behaviors
+
 ##### 0.0.10
 
 - fixed a bug with result format sent to LT
