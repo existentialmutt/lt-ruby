@@ -87,7 +87,7 @@
   (let [n (notifos/working "Connecting..")
         obj (object/create ::connecting-notifier client)
         use-runner (or (::use-rvm? @ruby) (::use-rbenv? @ruby))
-        keys->env {::use-rbenv? :LT_USE_RBENV, ::use-rvm? :LT_USE_RVM}
+        keys->env {::use-rbenv? :LT_USE_RBENV, ::use-rvm? :LT_USE_RVM, ::enable-client-logging? :LT_ENABLE_CLIENT_LOGGING}
         env (zipmap (map keys->env
                          (keys (select-keys @ruby (keys keys->env))))
                     (cycle [true]))
@@ -405,3 +405,12 @@
                           (when-let [ed (pool/last-active)]
                             (object/raise ed :live.toggle!)
                             ))})
+
+(behavior ::client-enable-logging
+            :triggers #{:object.instant}
+            :desc "Ruby: log ruby client output to lt_client.log"
+            :type :user
+            :params []
+            :exclusive true
+            :reaction (fn [this]
+                        (object/merge! ruby {::enable-client-logging? true})))

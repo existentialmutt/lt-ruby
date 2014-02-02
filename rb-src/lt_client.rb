@@ -8,8 +8,19 @@ gem 'method_source'
 require 'method_source'
 require 'fileutils'
 
+class NullLogger < Logger
+  def initialize(*args)
+  end
+
+  def add(*args, &block)
+  end
+end
+
+
 LOGFILE = "lt_client.log"
-logger = Logger.new(LOGFILE)
+LOGGER_CLASS = (ENV['LT_ENABLE_CLIENT_LOGGING'] ? Logger : NullLogger)
+
+logger = LOGGER_CLASS.new(LOGFILE)
 
 logger.debug "Client started with command:"
 logger.debug($0)
@@ -22,7 +33,7 @@ class LtClient < EM::Connection
   attr_accessor :currentId, :eval_queue
 
   def logger
-    @_logger = Logger.new(LOGFILE)
+    @_logger = LOGGER_CLASS.new(LOGFILE)
   end
 
   def post_init
