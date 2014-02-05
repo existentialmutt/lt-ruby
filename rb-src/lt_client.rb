@@ -155,6 +155,7 @@ class LtPrinter
       self.flush
     end
   end
+  alias_method :print, :write
 
   def flush
     client.send_response(client.currentId, "editor.eval.ruby.print", {"msg" => @cur, "file" => File.basename(FileUtils.pwd)})
