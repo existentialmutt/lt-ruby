@@ -22,6 +22,8 @@ LOGGER_CLASS = (ENV['LT_ENABLE_CLIENT_LOGGING'] ? Logger : NullLogger)
 
 logger = LOGGER_CLASS.new(LOGFILE)
 
+load File.dirname(__FILE__) + "/handle_specs.rb"
+
 logger.debug "Client started with command:"
 logger.debug($0)
 logger.debug(ARGV)
@@ -75,7 +77,11 @@ class LtClient < EM::Connection
     if id && cmd
       case cmd
       when "editor.eval.ruby"
-        eval_ruby(id, args)
+        if args['name'] =~ /_spec\.rb$/
+          eval_spec(id,args)
+        else
+          eval_ruby(id, args)
+        end
       when "client.close"
         logger.debug("Disconnecting")
         close_connection
@@ -122,6 +128,15 @@ class LtClient < EM::Connection
   rescue Exception => e
     exception_and_backtrace = [e.inspect, e.backtrace].flatten.join("\n")
     send_response(id, "editor.eval.ruby.exception", {"ex" => exception_and_backtrace, "meta" => response_meta(args["meta"])})
+  end
+
+  def run_shell(cmd)
+    `#{cmd} 2>&1`
+  end
+
+  def eval_spec(id,args)
+    run = HandleSpecs::Run.new(:client => self, :eval_id => id, :args => args)
+    run.result.send_responses!
   end
 
   def response_meta(request_meta)
@@ -182,8 +197,9 @@ class LtWatch
   end
 end
 
-EM.run do
-  EM.connect '127.0.0.1', ARGV[0].to_i, LtClient
-  LtPrinter.safe_print "Connected\n"
+unless defined?(RSpec)
+  EM.run do
+    EM.connect '127.0.0.1', ARGV[0].to_i, LtClient
+    LtPrinter.safe_print "Connected\n"
+  end
 end
-
