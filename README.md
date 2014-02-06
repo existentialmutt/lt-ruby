@@ -9,7 +9,6 @@ There is also a basic Live Mode/Instarepl that will evaluate lines of code as yo
 ## Installation
 
 1.  From LightTable's plugin manager, choose the available tab and double-click the "Ruby Instarepl" plugin to install it.
-2.  If your preferred ruby is not your system default, go to User Behaviors and add an entry for `:editor.ruby [(:lt.objs.langs.ruby/ruby-exe "/path/to/ruby")]`
 3.  Open the Command Bar and choose `App: Reload Behaviors` or restart LightTable
 4.  Open up a ruby file, select some code and use `ctrl/cmd-enter` to eval it.  Use `ctrl/cmd-shift-enter` to eval the whole file.
 
@@ -42,12 +41,6 @@ Watches enable you to see the results of individual expressions that were execut
 
 At present, you have to re-evaluate the whole file with `ctrl/cmd-shift enter` before your watches will be active.  This will be fixed in a future version (see #14)
 
-### RVM and Rbenv support
-
-Support exists for both RVM and rbenv.  To enable RVM add `:editor.ruby [(:lt.objs.langs.ruby/use-rvm)]` to your User Behaviors.  Once that's in place the ruby repl will be run out of whatever RVM environment you've defined for that directory via rvmrc, etc.
-
-Similarly, to enable rbenv add `:editor.ruby [(:lt.objs.langs.ruby/use-rbenv)]`
-
 ### Rails support
 
 As of v0.0.4, the plugin is able to load a Rails environment.  Just start up a Ruby connection in your project directory and then eval `require 'config/environment'` (or place that in an init file -- see below)
@@ -59,6 +52,14 @@ Basic rspec support is implemented.  If the file you are evaling from is named *
 ### Init File
 
 Ruby code in `.lighttable` in the project root (the same directory as your Gemfile) will be run after establishing a new connection.
+
+## Choosing a Ruby Version
+
+Support exists for both RVM and rbenv.  To enable RVM add `(:lt.objs.langs.ruby/use-rvm)` to the `:editor` vector in your User Behaviors (e.g. `:editor [(:lt.objs.langs.ruby/use-rvm)]`.  Once that's in place the ruby repl will be run out of whatever RVM environment you've defined for that directory via rvmrc, etc.
+
+Similarly, to enable rbenv add `[(:lt.objs.langs.ruby/use-rbenv)]` to the `:editor` vector.
+
+If you're not using rbenv or rvm you can set the path to ruby manually by adding `(:lt.objs.langs.ruby/ruby-exe "/path/to/ruby")` to the `:editor` vector.
 
 ## The Road Forward
 I hope to add more features for Rails in future versions.  Also the live mode could be enhanced to enable automatic watches.
