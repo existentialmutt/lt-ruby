@@ -58,6 +58,15 @@ class LtClient < EM::Connection
     $stdout = LtPrinter.new(self)
     $stderr = LtPrinter.new(self)
     self.eval_queue = ""
+
+    load_project_file!(FileUtils.pwd)
+  end
+
+  def load_project_file!(dir)
+    file = "#{dir}/.lighttable"
+    load(file) if FileTest.exist?(file)
+  rescue => exp
+    logger.error "Error loading project file #{file}: #{exp.message}"
   end
 
   def receive_data(data)
