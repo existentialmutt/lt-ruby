@@ -50,7 +50,15 @@ Similarly, to enable rbenv add `:editor.ruby [(:lt.objs.langs.ruby/use-rbenv)]`
 
 ### Rails support
 
-As of v0.0.4, the plugin is able to load a Rails environment.  Just start up a Ruby connection in your project directory and then eval `require 'config/environment'`
+As of v0.0.4, the plugin is able to load a Rails environment.  Just start up a Ruby connection in your project directory and then eval `require 'config/environment'` (or place that in an init file -- see below)
+
+### RSpec support
+
+Basic rspec support is implemented.  If the file you are evaling from is named *_spec.rb your code will be run as specs with results displayed inline.
+
+### Init File
+
+Ruby code in `.lighttable` in the project root (the same directory as your Gemfile) will be run after establishing a new connection.
 
 ## The Road Forward
 I hope to add more features for Rails in future versions.  Also the live mode could be enhanced to enable automatic watches.
@@ -65,6 +73,12 @@ The clojurescript / lighttable side started by using the Python plugin as a temp
 Thanks also to my employer, [Green River](http://www.greenriver.com) for supporting development of this plugin.
 
 ## Changelog
+
+##### 0.0.12
+
+- rspec support (thanks @mharris717)
+- init file (thanks @mharris717)
+- bugfix for Log4R (thanks @StarvingMarvin)
 
 ##### 0.0.11
 
