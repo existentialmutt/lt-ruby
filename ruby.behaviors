@@ -17,7 +17,7 @@
                    ]
      :editor.ruby.live [:lt.objs.langs.ruby/eval-on-change]
 
-     :files [(:lt.objs.files/file-types [{:name "Ruby" :exts [:rb] :mime "text/x-ruby" :tags [:editor.ruby]}])]
+     :files [(:lt.objs.files/file-types [{:name "Ruby" :exts [:rb, :gemspec, :Rakefile, :Gemfile] :mime "text/x-ruby" :tags [:editor.ruby]}])]
      :ruby.lang [:lt.objs.langs.ruby/eval! :lt.objs.langs.ruby/connect]}
 
 ;;  :- {:editor.ruby [:lt.plugins.watches/eval-on-watch-or-unwatch]}
