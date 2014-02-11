@@ -98,4 +98,17 @@ module HandleSpecs
       client.send_response result.eval_id, message_name, result_hash
     end
   end
+
+  class SpecPlugin
+    def handle?(cmd,args)
+      res = (cmd == "editor.eval.ruby") && (args['name'] =~ /_spec\.rb$/)
+      !!res
+    end
+    def handle(id,cmd,args,client)
+      run = HandleSpecs::Run.new(:client => client, :eval_id => id, :args => args)
+      run.result.send_responses!
+    end
+
+    LtRuby::Plugin.register self
+  end
 end

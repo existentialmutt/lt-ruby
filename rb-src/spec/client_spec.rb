@@ -28,9 +28,14 @@ shared_context "eval" do
     client.eval_ruby ops[:id], 'code' => code
   end
 
+  let(:spec_plugin) do
+    LtRuby::Plugin.plugins.find { |x| x.class == HandleSpecs::SpecPlugin }
+  end
+
   def eval_spec(code, ops={})
     ops[:id] ||= 1
-    client.eval_spec ops[:id], 'code' => code, 'name' => ops[:file], 'path' => (ops[:path]||ops[:file])
+    args = {'code' => code, 'name' => ops[:file], 'path' => (ops[:path]||ops[:file])}
+    spec_plugin.handle ops[:id], nil, args, client
   end
 end
 
@@ -101,7 +106,7 @@ describe "receive_data" do
   it 'receive spec file' do
     data = make_data :code => "a = 42", :file => "main_spec.rb"
     client.should_not_receive(:eval_ruby)
-    client.should_receive(:eval_spec)
+    spec_plugin.should_receive(:handle)
     client.receive_data(data)
   end
 end

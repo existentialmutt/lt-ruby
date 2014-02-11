@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Usage
-# lt_client_runner.sh <project root directory> <path_to_lt_client.rb> <lt_port> <lt_client_id>
+# lt_client_runner.sh <project root directory> <path_to_lt_client.rb> <lt_port> <lt_client_id> <comma_plugins>
 
 
 if [ -n "$LT_USE_RVM" ]
@@ -16,4 +16,4 @@ fi
 
 cd $1
 
-echo $2 $3 $4 | xargs ruby
+echo $2 $3 $4 $5 | xargs ruby

@@ -94,9 +94,13 @@
         command (if use-runner
                     "bash"
                     (or (::ruby-exe @ruby) "ruby"))
+
+        plugin-arg (clojure.string/join "," (keys (::plugins @ruby)))
+
         args (if use-runner
-                 [runner-path project-path (bash-escape-spaces rb-path) tcp/port (clients/->id client)]
-                 [(escape-spaces rb-path) tcp/port (clients/->id client)])]
+                 [runner-path project-path (bash-escape-spaces rb-path) tcp/port (clients/->id client) plugin-arg]
+                 [(escape-spaces rb-path) tcp/port (clients/->id client) plugin-arg])]
+
     (proc/exec {:command command
                 :args args
                 :cwd project-path
@@ -310,7 +314,10 @@
 
 
 (object/object* ::ruby-lang
-                :tags #{:ruby.lang})
+                :tags #{:ruby.lang}
+                :init (fn [this]
+                        (object/merge! this {::plugins {}})
+                        nil))
 
 (def ruby (object/create ::ruby-lang))
 
@@ -346,6 +353,16 @@
             :exclusive true
             :reaction (fn [this]
                         (object/merge! ruby {::use-rbenv? true})))
+
+(behavior ::use-plugin
+            :triggers #{:object.instant}
+            :desc "Ruby: Use plugin when loading REPL"
+            :type :user
+            :params [{:label "plugin"
+                       :type :plugin}]
+            :exclusive false
+            :reaction (fn [this plugin]
+                        (object/merge! ruby {::plugins (assoc (::plugins @ruby) plugin true)})))
 
 (defui live-toggler [this]
   [:div#instarepl [:span {:class (bound this #(str "livetoggler " (when-not (:live %) "off")))} "live"]]

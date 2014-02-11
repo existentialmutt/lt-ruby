@@ -22,7 +22,9 @@ LOGGER_CLASS = (ENV['LT_ENABLE_CLIENT_LOGGING'] ? Logger : NullLogger)
 
 logger = LOGGER_CLASS.new(LOGFILE)
 
+load File.dirname(__FILE__) + "/plugin.rb"
 load File.dirname(__FILE__) + "/handle_specs.rb"
+load File.dirname(__FILE__) + "/project_file.rb"
 
 logger.debug "Client started with command:"
 logger.debug($0)
@@ -31,6 +33,7 @@ logger.debug(ARGV)
 class LtClient < EM::Connection
 
   include MethodSource::CodeHelpers
+  include LtRuby::PluginMod
 
   attr_accessor :currentId, :eval_queue
 
@@ -59,14 +62,25 @@ class LtClient < EM::Connection
     $stderr = LtPrinter.new(self)
     self.eval_queue = ""
 
-    load_project_file!(FileUtils.pwd)
+    LtRuby::Plugin.setup_user_plugins!(ARGV[2])
+
+    invoke_plugin(:connection_completed)
   end
 
-  def load_project_file!(dir)
-    file = "#{dir}/.lighttable"
-    load(file) if FileTest.exist?(file)
-  rescue => exp
-    logger.error "Error loading project file #{file}: #{exp.message}"
+  def dispatch(id,cmd,args)
+    return if dispatch_to_plugin(id,cmd,args)
+    dispatch_built_in(id,cmd,args)
+  end
+
+  def dispatch_built_in(id,cmd,args)
+    case cmd
+    when "editor.eval.ruby"
+      eval_ruby(id, args)
+    when "client.close"
+      logger.debug("Disconnecting")
+      close_connection
+      exit(0)
+    end
   end
 
   def receive_data(data)
@@ -84,18 +98,7 @@ class LtClient < EM::Connection
 
     # Dispatch on cmd
     if id && cmd
-      case cmd
-      when "editor.eval.ruby"
-        if args['name'] =~ /_spec\.rb$/
-          eval_spec(id,args)
-        else
-          eval_ruby(id, args)
-        end
-      when "client.close"
-        logger.debug("Disconnecting")
-        close_connection
-        exit(0)
-      end
+      dispatch(id,cmd,args)
     else
       logger.debug "Ignoring invalid input"
     end
@@ -141,11 +144,6 @@ class LtClient < EM::Connection
 
   def run_shell(cmd)
     `#{cmd} 2>&1`
-  end
-
-  def eval_spec(id,args)
-    run = HandleSpecs::Run.new(:client => self, :eval_id => id, :args => args)
-    run.result.send_responses!
   end
 
   def response_meta(request_meta)
