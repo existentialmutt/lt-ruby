@@ -28,11 +28,9 @@
 ;; Proc
 ;;****************************************************
 
-(def plugin-dir "/Users/mharris717/lt_plugins/Ruby_Instarepl")
-
 (def shell (load/node-module "shelljs"))
-(def rb-path (files/join plugin-dir "rb-src/lt_client.rb"))
-(def runner-path (files/join plugin-dir "rb-src/lt_client_runner.sh"))
+(def rb-path (files/join plugins/*plugin-dir* "rb-src/lt_client.rb"))
+(def runner-path (files/join plugins/*plugin-dir* "rb-src/lt_client_runner.sh"))
 
 (behavior ::on-out
                   :triggers #{:proc.out}
@@ -101,15 +99,13 @@
 
         args (if use-runner
                  [runner-path project-path (bash-escape-spaces rb-path) tcp/port (clients/->id client) plugin-arg]
-                 [(escape-spaces rb-path) tcp/port (clients/->id client) plugin-arg])
+                 [(escape-spaces rb-path) tcp/port (clients/->id client) plugin-arg])]
 
-        proc-map {:command command
-                    :args args
-                    :cwd project-path
-                    :env env
-                    :obj obj}]
-
-    (proc/exec proc-map)))
+    (proc/exec {:command command
+                :args args
+                :cwd project-path
+                :env env
+                :obj obj})))
 
 (defn check-ruby [obj]
   (assoc obj :ruby (or (::ruby-exe @ruby)
@@ -357,9 +353,6 @@
             :exclusive true
             :reaction (fn [this]
                         (object/merge! ruby {::use-rbenv? true})))
-
-'(object/merge! ruby {::plugins (assoc (::plugins @ruby) plugin true)})
-'(object/merge! ruby {::plugins (cons plugin (::plugins @ruby))})
 
 (behavior ::use-plugin
             :triggers #{:object.instant}
