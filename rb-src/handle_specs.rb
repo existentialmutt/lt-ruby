@@ -108,9 +108,7 @@ module HandleSpecs
       run = HandleSpecs::Run.new(:client => client, :eval_id => id, :args => args)
       run.result.send_responses!
     end
+
+    LtRuby::Plugin.register self
   end
-
-  LtRuby::Plugin.register SpecPlugin
-
-
 end

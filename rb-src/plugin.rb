@@ -42,7 +42,7 @@ module LtRuby
       LtRuby::Plugin.invoke(method,:client => self)
     end
     def dispatch_to_plugin(id,cmd,args)
-      plugin = LtRuby::Plugin.plugins.find { |x| x.handle?(cmd,args) }
+      plugin = LtRuby::Plugin.plugins.find { |x| x.respond_to?("handle?") && x.handle?(cmd,args) }
       if plugin
         plugin.handle(id,cmd,args,self)
         true

@@ -2,6 +2,3 @@
 TAGS
 target/
 *lt_client.log
-lt_client3.log
-junk
-.nrepl-port

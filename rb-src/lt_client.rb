@@ -17,7 +17,7 @@ class NullLogger < Logger
 end
 
 
-LOGFILE = "/code/orig/lt-ruby/lt_client3.log"
+LOGFILE = "lt_client.log"
 LOGGER_CLASS = (ENV['LT_ENABLE_CLIENT_LOGGING'] ? Logger : NullLogger)
 
 logger = LOGGER_CLASS.new(LOGFILE)
@@ -65,8 +65,6 @@ class LtClient < EM::Connection
     LtRuby::Plugin.setup_user_plugins!(ARGV[2])
 
     invoke_plugin(:connection_completed)
-
-    logger.debug "done with connection_completed"
   end
 
   def dispatch(id,cmd,args)
@@ -207,17 +205,9 @@ class LtWatch
   end
 end
 
-def connect
+unless defined?(RSpec)
   EM.run do
     EM.connect '127.0.0.1', ARGV[0].to_i, LtClient
     LtPrinter.safe_print "Connected\n"
   end
-rescue => exp
-  b = exp.backtrace.join("\n")
-  logger.debug "ERROR: #{exp.message}\n#{b}"
-  raise exp
-end
-
-unless defined?(RSpec)
-  connect
 end
