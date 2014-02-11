@@ -1,12 +1,14 @@
 module LtRuby
   class Plugins
-    fattr(:plugins) { [] }
+    def plugins
+      @plugins ||= []
+    end
     include Enumerable
     def each(&b)
       plugins.each(&b)
     end
     def register(plugin)
-      self.plugins << plugin
+      self.plugins << plugin.new
     end
 
     def invoke(method,*args)
@@ -18,9 +20,19 @@ module LtRuby
 
   class Plugin
     class << self
-      fattr(:plugins) { Plugins.new }
+      def plugins
+        @plugins ||= Plugins.new
+      end
+
       def method_missing(sym,*args,&b)
         plugins.send(sym,*args,&b)
+      end
+
+      def setup_user_plugins!(plugin_str)
+        plugin_str.split(",").each do |x|
+          logger.debug "loading plugin #{x}"
+          require x
+        end
       end
     end
   end

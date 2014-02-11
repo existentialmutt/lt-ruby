@@ -8,8 +8,6 @@ gem 'method_source'
 require 'method_source'
 require 'fileutils'
 
-require 'mharris_ext'
-
 class NullLogger < Logger
   def initialize(*args)
   end
@@ -64,40 +62,28 @@ class LtClient < EM::Connection
     $stderr = LtPrinter.new(self)
     self.eval_queue = ""
 
-    #load_project_file!(FileUtils.pwd)
-    setup_plugins!(ARGV[2].to_s.split(","))
+    LtRuby::Plugin.setup_user_plugins!(ARGV[2])
 
     invoke_plugin(:connection_completed)
 
     logger.debug "done with connection_completed"
   end
 
-
-
-  def setup_plugins!(plugins)
-    plugins.each do |x|
-      logger.debug "loading plugin #{x}"
-      require x
-    end
+  def dispatch(id,cmd,args)
+    return if dispatch_to_plugin(id,cmd,args)
+    dispatch_built_in(id,cmd,args)
   end
 
-    def dispatch(id,cmd,args)
-      return if dispatch_to_plugin(id,cmd,args)
-      dispatch_built_in(id,cmd,args)
+  def dispatch_built_in(id,cmd,args)
+    case cmd
+    when "editor.eval.ruby"
+      eval_ruby(id, args)
+    when "client.close"
+      logger.debug("Disconnecting")
+      close_connection
+      exit(0)
     end
-
-    def dispatch_built_in(id,cmd,args)
-      case cmd
-      when "editor.eval.ruby"
-        eval_ruby(id, args)
-      when "client.close"
-        logger.debug("Disconnecting")
-        close_connection
-        exit(0)
-      end
-    end
-
-
+  end
 
   def receive_data(data)
     logger.debug "Received Data:"

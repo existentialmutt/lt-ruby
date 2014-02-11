@@ -28,11 +28,14 @@ shared_context "eval" do
     client.eval_ruby ops[:id], 'code' => code
   end
 
+  let(:spec_plugin) do
+    LtRuby::Plugin.plugins.find { |x| x.class == HandleSpecs::SpecPlugin }
+  end
+
   def eval_spec(code, ops={})
     ops[:id] ||= 1
     args = {'code' => code, 'name' => ops[:file], 'path' => (ops[:path]||ops[:file])}
-    #client.eval_spec ops[:id],
-    HandleSpecs::SpecPlugin.handle ops[:id], nil, args, client
+    spec_plugin.handle ops[:id], nil, args, client
   end
 end
 
@@ -56,14 +59,12 @@ describe "eval" do
     eval_code "a + 1"
   end
 
-  if true
-    describe "spec file" do
-      it 'basic' do
-        mock_json = '{"examples": [], "summary_line":"1 examples, 0 failures"}'
-        setup_response_mock :result => "1 examples, 0 failures", :line => 0
-        client.should_receive(:run_shell).with("rspec /fun/tmp_lt_spec.rb -f j").and_return(mock_json)
-        eval_spec "a = 42", :file => "main_spec.rb", :path => "/fun/main_spec.rb"
-      end
+  describe "spec file" do
+    it 'basic' do
+      mock_json = '{"examples": [], "summary_line":"1 examples, 0 failures"}'
+      setup_response_mock :result => "1 examples, 0 failures", :line => 0
+      client.should_receive(:run_shell).with("rspec /fun/tmp_lt_spec.rb -f j").and_return(mock_json)
+      eval_spec "a = 42", :file => "main_spec.rb", :path => "/fun/main_spec.rb"
     end
   end
 end
@@ -102,12 +103,10 @@ describe "receive_data" do
     client.receive_data(data)
   end
 
-  if true
-    it 'receive spec file' do
-      data = make_data :code => "a = 42", :file => "main_spec.rb"
-      client.should_not_receive(:eval_ruby)
-      HandleSpecs::SpecPlugin.should_receive(:handle)
-      client.receive_data(data)
-    end
+  it 'receive spec file' do
+    data = make_data :code => "a = 42", :file => "main_spec.rb"
+    client.should_not_receive(:eval_ruby)
+    spec_plugin.should_receive(:handle)
+    client.receive_data(data)
   end
 end
