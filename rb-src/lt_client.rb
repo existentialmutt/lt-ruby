@@ -17,7 +17,7 @@ class NullLogger < Logger
 end
 
 
-LOGFILE = "lt_client.log"
+LOGFILE = "/code/orig/lt-ruby/lt_client3.log"
 LOGGER_CLASS = (ENV['LT_ENABLE_CLIENT_LOGGING'] ? Logger : NullLogger)
 
 logger = LOGGER_CLASS.new(LOGFILE)
@@ -60,6 +60,7 @@ class LtClient < EM::Connection
     self.eval_queue = ""
 
     load_project_file!(FileUtils.pwd)
+    setup_plugins!(ARGV[2].to_s.split(","))
   end
 
   def load_project_file!(dir)
@@ -67,6 +68,13 @@ class LtClient < EM::Connection
     load(file) if FileTest.exist?(file)
   rescue => exp
     logger.error "Error loading project file #{file}: #{exp.message}"
+  end
+
+  def setup_plugins!(plugins)
+    plugins.each do |x|
+      logger.debug "loading plugin #{x}"
+      require x
+    end
   end
 
   def receive_data(data)

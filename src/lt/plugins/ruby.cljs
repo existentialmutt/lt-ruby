@@ -28,9 +28,11 @@
 ;; Proc
 ;;****************************************************
 
+(def plugin-dir "/Users/mharris717/lt_plugins/Ruby_Instarepl")
+
 (def shell (load/node-module "shelljs"))
-(def rb-path (files/join plugins/*plugin-dir* "rb-src/lt_client.rb"))
-(def runner-path (files/join plugins/*plugin-dir* "rb-src/lt_client_runner.sh"))
+(def rb-path (files/join plugin-dir "rb-src/lt_client.rb"))
+(def runner-path (files/join plugin-dir "rb-src/lt_client_runner.sh"))
 
 (behavior ::on-out
                   :triggers #{:proc.out}
@@ -94,14 +96,25 @@
         command (if use-runner
                     "bash"
                     (or (::ruby-exe @ruby) "ruby"))
+
+        plugin-arg (clojure.string/join "," (keys (::plugins @ruby)))
+
         args (if use-runner
-                 [runner-path project-path (bash-escape-spaces rb-path) tcp/port (clients/->id client)]
-                 [(escape-spaces rb-path) tcp/port (clients/->id client)])]
-    (proc/exec {:command command
-                :args args
-                :cwd project-path
-                :env env
-                :obj obj})))
+                 [runner-path project-path (bash-escape-spaces rb-path) tcp/port (clients/->id client) plugin-arg]
+                 [(escape-spaces rb-path) tcp/port (clients/->id client) plugin-arg])
+
+        proc-map {:command command
+                    :args args
+                    :cwd project-path
+                    :env env
+                    :obj obj}]
+
+
+
+    (println "run-rb")
+    (println (::plugins @ruby))
+    (println proc-map)
+    (proc/exec proc-map)))
 
 (defn check-ruby [obj]
   (assoc obj :ruby (or (::ruby-exe @ruby)
@@ -310,7 +323,10 @@
 
 
 (object/object* ::ruby-lang
-                :tags #{:ruby.lang})
+                :tags #{:ruby.lang}
+                :init (fn [this]
+                        (object/merge! this {::plugins {}})
+                        nil))
 
 (def ruby (object/create ::ruby-lang))
 
@@ -346,6 +362,22 @@
             :exclusive true
             :reaction (fn [this]
                         (object/merge! ruby {::use-rbenv? true})))
+
+'(object/merge! ruby {::plugins (assoc (::plugins @ruby) plugin true)})
+'(object/merge! ruby {::plugins (cons plugin (::plugins @ruby))})
+
+(behavior ::use-plugin
+            :triggers #{:object.instant}
+            :desc "Ruby: Use plugin when loading REPL"
+            :type :user
+            :params [{:label "plugin"
+                       :type :plugin}]
+            :exclusive false
+            :reaction (fn [this plugin]
+                        (println "use-plugin" plugin)
+                        (println ruby)
+                        (object/merge! ruby {::plugins (assoc (::plugins @ruby) plugin true)})
+                        (println ruby)))
 
 (defui live-toggler [this]
   [:div#instarepl [:span {:class (bound this #(str "livetoggler " (when-not (:live %) "off")))} "live"]]
