@@ -109,11 +109,6 @@
                     :env env
                     :obj obj}]
 
-
-
-    (println "run-rb")
-    (println (::plugins @ruby))
-    (println proc-map)
     (proc/exec proc-map)))
 
 (defn check-ruby [obj]
@@ -374,10 +369,7 @@
                        :type :plugin}]
             :exclusive false
             :reaction (fn [this plugin]
-                        (println "use-plugin" plugin)
-                        (println ruby)
-                        (object/merge! ruby {::plugins (assoc (::plugins @ruby) plugin true)})
-                        (println ruby)))
+                        (object/merge! ruby {::plugins (assoc (::plugins @ruby) plugin true)})))
 
 (defui live-toggler [this]
   [:div#instarepl [:span {:class (bound this #(str "livetoggler " (when-not (:live %) "off")))} "live"]]
