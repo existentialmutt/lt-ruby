@@ -91,6 +91,7 @@
         env (zipmap (map keys->env
                          (keys (select-keys @ruby (keys keys->env))))
                     (cycle [true]))
+        env (if (::rvm-path @ruby) (assoc env :LT_RVM_PATH (::rvm-path @ruby)) env)
         command (if use-runner
                     "bash"
                     (or (::ruby-exe @ruby) "ruby"))
@@ -333,16 +334,23 @@
             :triggers #{:object.instant}
             :desc "Ruby: Use RVM when loading REPL"
             :type :user
-            :params []
             :exclusive true
             :reaction (fn [this]
                         (object/merge! ruby {::use-rvm? true})))
+
+(behavior ::rvm-path
+            :triggers #{:object.instant}
+            :desc "Ruby: Path to RVM init script"
+            :type :user
+            :params [{:label "path", :type :path}]
+            :exclusive true
+            :reaction (fn [this path]
+                        (object/merge! ruby {::rvm-path path})))
 
 (behavior ::use-rbenv
             :triggers #{:object.instant}
             :desc "Ruby: Use rbenv when loading REPL"
             :type :user
-            :params []
             :exclusive true
             :reaction (fn [this]
                         (object/merge! ruby {::use-rbenv? true})))
@@ -410,7 +418,6 @@
             :triggers #{:object.instant}
             :desc "Ruby: log ruby client output to lt_client.log"
             :type :user
-            :params []
             :exclusive true
             :reaction (fn [this]
                         (object/merge! ruby {::enable-client-logging? true})))

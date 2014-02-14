@@ -55,9 +55,11 @@ Ruby code in `.lighttable` in the project root (the same directory as your Gemfi
 
 ## Choosing a Ruby Version
 
-Support exists for both RVM and rbenv.  To enable RVM add `(:lt.objs.langs.ruby/use-rvm)` to the `:editor` vector in your User Behaviors (e.g. `:editor [(:lt.objs.langs.ruby/use-rvm)]`.  Once that's in place the ruby repl will be run out of whatever RVM environment you've defined for that directory via rvmrc, etc.
+Support exists for both RVM and rbenv.  To enable RVM add `(:lt.objs.langs.ruby/use-rvm)` to the `:editor` vector in your User Behaviors (e.g. `:editor [:lt.objs.langs.ruby/use-rvm]`.  Once that's in place the ruby repl will be run out of whatever RVM environment you've defined for that directory via rvmrc, etc.
 
-Similarly, to enable rbenv add `[(:lt.objs.langs.ruby/use-rbenv)]` to the `:editor` vector.
+By default, the plugin looks for RVM at `$HOME/.rvm/scripts/rvm`  If it's in a different locaton you can specify that via the `:lt.objs.langs.ruby/rvm-path` user behavior (e.g. `:editor [(:lt.objs.langs.ruby/rvm-path "/usr/local/rvm/scripts/rvm")]`)
+
+To enable rbenv add `[(:lt.objs.langs.ruby/use-rbenv)]` to the `:editor` vector.
 
 If you're not using rbenv or rvm you can set the path to ruby manually by adding `(:lt.objs.langs.ruby/ruby-exe "/path/to/ruby")` to the `:editor` vector.
 
@@ -74,6 +76,11 @@ The clojurescript / lighttable side started by using the Python plugin as a temp
 Thanks also to my employer, [Green River](http://www.greenriver.com) for supporting development of this plugin.
 
 ## Changelog
+
+##### 0.0.14
+
+- additional filenames default to Ruby (thanks @StarvingMarvin)
+- added a user behavior to specify RVM path
 
 ##### 0.0.12
 

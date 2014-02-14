@@ -5,14 +5,17 @@
 
 
 if [ -n "$LT_USE_RVM" ]
-  then source $HOME/.rvm/scripts/rvm
+  then
+  if ! [ -n "$LT_RVM_PATH" ]
+    then
+    LT_RVM_PATH=$HOME/.rvm/scripts/rvm
+  fi
+  source $LT_RVM_PATH
 fi
 
 if [ -n "$LT_USE_RBENV" ]
   then eval "$(rbenv init -)"
 fi
-
-
 
 cd $1
 
