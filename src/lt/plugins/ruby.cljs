@@ -28,9 +28,10 @@
 ;; Proc
 ;;****************************************************
 
+(def plugin-dir (plugins/find-plugin "Ruby Instarepl"))
 (def shell (load/node-module "shelljs"))
-(def rb-path (files/join plugins/*plugin-dir* "rb-src/lt_client.rb"))
-(def runner-path (files/join plugins/*plugin-dir* "rb-src/lt_client_runner.sh"))
+(def rb-path (files/join plugin-dir "rb-src/lt_client.rb"))
+(def runner-path (files/join plugin-dir "rb-src/lt_client_runner.sh"))
 
 (behavior ::on-out
                   :triggers #{:proc.out}
