@@ -244,8 +244,10 @@
                   :triggers #{:editor.eval.ruby.result}
                   :reaction (fn [editor res]
                               (notifos/done-working)
-                              (object/raise editor :editor.result (:result res) {:line (:end (:meta res))
-                                                                                 :start-line (-> res :meta :start)})))
+                                (let [result (try (JSON.parse(:result res))
+                                             (catch js/Error e (:result res)))]
+                                (object/raise editor :editor.result result {:line (:end (:meta res))
+                                                                                 :start-line (-> res :meta :start)}))))
 
 (behavior ::ruby-success
                   :triggers #{:editor.eval.ruby.success}
