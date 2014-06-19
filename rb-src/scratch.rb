@@ -13,3 +13,7 @@ foo += 2
 puts "Hi"
 
 puts "Hello"
+
+
+1+1
+2+2

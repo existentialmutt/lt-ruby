@@ -20,8 +20,7 @@
             [lt.util.load :as load]
             [crate.binding :refer [bound subatom]]
             [crate.core :as crate]
-            [lt.util.dom :as dom]
-            [lt.util.cljs :refer [js->clj]])
+            [lt.util.dom :as dom])
   (:require-macros [lt.macros :refer [behavior defui]]))
 
 ;;****************************************************

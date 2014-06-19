@@ -77,6 +77,11 @@ Thanks also to my employer, [Green River](http://www.greenriver.com) for support
 
 ## Changelog
 
+##### 0.0.15
+
+- supports pp for printing to console
+- Show non-ascii characters without unicode escaping (thanks @akazah)
+
 ##### 0.0.14
 
 - additional filenames default to Ruby (thanks @StarvingMarvin)
