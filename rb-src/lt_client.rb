@@ -175,7 +175,7 @@ class LtPrinter
 
   def write(text)
     @cur += text
-    if text == "\n"
+    if text =~ /\n/
       self.flush
     end
   end

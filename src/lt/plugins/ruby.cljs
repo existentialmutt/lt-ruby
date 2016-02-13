@@ -97,7 +97,7 @@
                     (or (::ruby-exe @ruby) "ruby"))
         args (if use-runner
                  [runner-path project-path (bash-escape-spaces rb-path) tcp/port (clients/->id client)]
-                 [(escape-spaces rb-path) tcp/port (clients/->id client)])]
+                 [rb-path tcp/port (clients/->id client)])]
     (proc/exec {:command command
                 :args args
                 :cwd project-path

@@ -64,7 +64,7 @@ To enable rbenv add `[(:lt.objs.langs.ruby/use-rbenv)]` to the `:editor` vector.
 If you're not using rbenv or rvm you can set the path to ruby manually by adding `(:lt.objs.langs.ruby/ruby-exe "/path/to/ruby")` to the `:editor` vector.
 
 ## The Road Forward
-I hope to add more features for Rails in future versions.  Also the live mode could be enhanced to enable automatic watches.
+It would be nice to add more features for Rails in future versions.  Also the live mode could be enhanced to enable automatic watches.
 
 I try to plan out features in the [Wish List](https://github.com/existentialmutt/lt-ruby/issues?labels=Wish+List&page=1&state=open)
 
@@ -76,6 +76,10 @@ The clojurescript / lighttable side started by using the Python plugin as a temp
 Thanks also to my employer, [Green River](http://www.greenriver.com) for supporting development of this plugin.
 
 ## Changelog
+
+##### 0.0.16
+
+- fix for LoadError on windows (thanks @lmtthws)
 
 ##### 0.0.15
 
