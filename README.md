@@ -148,7 +148,7 @@ Thanks also to my employer, [Green River](http://www.greenriver.com) for support
 
 - Initial release with eval for whole files and selections
 
-###License
+### License
 
 Copyright (C) 2014 Rafe Rosen
 
